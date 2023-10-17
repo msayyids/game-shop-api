@@ -15,7 +15,10 @@ func main() {
 	controller := controller.NewController(repository)
 
 	e := echo.New()
-	e.GET("/register", controller.Register)
+	e.POST("/register", controller.Register)
+	e.POST("/login", controller.Login)
+	// e.PUT("/user",controller.)
+
 	e.Logger.Fatal(e.Start(":8080"))
 
 }

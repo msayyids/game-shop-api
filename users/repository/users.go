@@ -31,9 +31,28 @@ func (r *Repository) Adduser(reqbodyUser entity.Users) (entity.Users, error) {
 	return newUserDoc, nil
 }
 
-func (r *Repository) Getuser(id primitive.ObjectID) (entity.Users, error) {
+func (r *Repository) FindUserbyEmail(email string) (entity.Users, error) {
 	collection := r.DB.Collection("users")
-	filter := bson.M{"_id": id}
+
+	filter := bson.M{"email": email}
+
+	var user entity.Users
+	if err := collection.FindOne(context.Background(), filter).Decode(&user); err != nil {
+		return entity.Users{}, fmt.Errorf(err.Error())
+	}
+
+	return user, nil
+}
+
+func (r *Repository) FindUserById(id string) (entity.Users, error) {
+	collection := r.DB.Collection("users")
+
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return entity.Users{}, fmt.Errorf(err.Error())
+	}
+
+	filter := bson.M{"_id": objID}
 
 	var user entity.Users
 	if err := collection.FindOne(context.Background(), filter).Decode(&user); err != nil {
