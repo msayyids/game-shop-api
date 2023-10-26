@@ -7,6 +7,7 @@ import (
 	"users/repository"
 
 	"github.com/labstack/echo/v4"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func Authentication(next echo.HandlerFunc) echo.HandlerFunc {
@@ -23,13 +24,13 @@ func Authentication(next echo.HandlerFunc) echo.HandlerFunc {
 			return c.JSON(http.StatusUnauthorized, helper.NewErrorResponse(401, "invalid access token"))
 		}
 
-		id := claims["id"].(string)
+		id, _ := primitive.ObjectIDFromHex(claims["_id"].(string))
 		loggedinUser, err := repo.FindUserById(id)
 		if err != nil {
 			return c.JSON(http.StatusUnauthorized, helper.NewErrorResponse(401, "invalid access token"))
 		}
 
-		c.Set("loggedInUser", loggedinUser)
+		c.Set("loggedInUser", loggedinUser.ID)
 
 		return next(c)
 

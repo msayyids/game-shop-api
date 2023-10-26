@@ -5,9 +5,10 @@ import (
 	"os"
 
 	"github.com/golang-jwt/jwt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func GenerateToken(id string) (string, error) {
+func GenerateToken(id primitive.ObjectID) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"_id": id,
 	})

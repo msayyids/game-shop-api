@@ -3,6 +3,7 @@ package main
 import (
 	"users/config"
 	"users/controller"
+	"users/middleware"
 	"users/repository"
 
 	_ "github.com/joho/godotenv/autoload"
@@ -17,7 +18,8 @@ func main() {
 	e := echo.New()
 	e.POST("/register", controller.Register)
 	e.POST("/login", controller.Login)
-	// e.PUT("/user",controller.)
+	e.PUT("/user", middleware.Authentication(controller.EditProfile))
+	e.GET("/user", middleware.Authentication(controller.GetProfile))
 
 	e.Logger.Fatal(e.Start(":8080"))
 
